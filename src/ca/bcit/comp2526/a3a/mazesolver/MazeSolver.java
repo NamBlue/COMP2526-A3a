@@ -75,7 +75,7 @@ public class MazeSolver {
      * @param path the path
      */
     public void generatePaths(Maze maze, int row, int column, ArrayList<MazeSection> path) {      
-        if (row < 0 || column < 0 || row > maze.getRows() || column > maze.getColumns() 
+        if (row < 0 || column < 0 || row > maze.getRows() - 1 || column > maze.getColumns() - 1
                 || maze.getMazeSectionAt(row, column).isSolid() 
                 || maze.getMazeSectionAt(row, column).hasBeenVisited()) {
             return;             
@@ -105,6 +105,7 @@ public class MazeSolver {
         int index = 0;
         for (int i = 0; i < mazeSolutions.size(); i++) {
             if (mazeSolutions.get(i).size() < shortest) {
+                shortest = mazeSolutions.get(i).size();
                 index = i;
             }
         }

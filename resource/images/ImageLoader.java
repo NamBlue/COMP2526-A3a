@@ -13,15 +13,8 @@ import java.util.Random;
 public class ImageLoader {
     private static ImageLoader imageLoader = new ImageLoader();
     //All URI for images are added here
-    private static String[] plants = {"plant.png", "plant1.png", "plant2.png",
-        "plant3.png"};
-    private static String[] omni = {"omni.png", "omni1.png", "omni2.png"};
-    private static String[] carni = {"carni.png", "carni1.png", "carni2.png"};
-    private static String[] herbi = {"herbi.png" , "herbi1.png", "herbi2.png",
-        "herbi3.png"};
-    private static String[] cell = {"cell.png", "cell1.png" , "cell2.png" ,
-        "cell3.png", "cell3.png", "cell3.png", "cell3.png", "cell.png",
-        "cell1.png", "cell3.png", "cell3.png"};
+    private static final String[] walls = {"wall1.png", "wall2.png", "wall3.png" , "wall4.png", "wall5.png"};
+    private static final String[] paths = {"path1.png"};
     
     /**
      * Loads the image.
@@ -34,62 +27,29 @@ public class ImageLoader {
     }
     
     /**
-     * Loads a random Plant Image chosen from the array of URI's.
+     * Loads a random Wall Image chosen from the array of URI's.
      * @return the image randomly selected
      */
-    public static Image getPlant() {
+    public static Image getWall() {
         Random gen = new Random();
-        int seed = gen.nextInt(plants.length);
+        int seed = 0;
+        if (gen.nextInt(100) < 50) {
+            seed = gen.nextInt(walls.length);
+        }
         
         return Toolkit.getDefaultToolkit().getImage(
-                imageLoader.getClass().getResource(plants[seed]));
+                imageLoader.getClass().getResource(walls[seed]));
     }
     
     /**
-     * Loads a random Herbivore Image chosen from the array of URI's.
+     * Loads a random Path Image chosen from the array of URI's.
      * @return the image randomly selected
      */
-    public static Image getHerbi() {
+    public static Image getPath() {
         Random gen = new Random();
-        int seed = gen.nextInt(herbi.length);
+        int seed = gen.nextInt(paths.length);
         
         return Toolkit.getDefaultToolkit().getImage(
-                imageLoader.getClass().getResource(herbi[seed]));
-    }
-    
-    /**
-     * Loads a random Carnivore Image chosen from the array of URI's.
-     * @return the image randomly selected
-     */
-    public static Image getCarni() {
-        Random gen = new Random();
-        int seed = gen.nextInt(carni.length);
-        
-        return Toolkit.getDefaultToolkit().getImage(
-                imageLoader.getClass().getResource(carni[seed]));
-    }
-    
-    /**
-     * Loads a random Omnivore Image chosen from the array of URI's.
-     * @return the image randomly selected
-     */
-    public static Image getOmni() {
-        Random gen = new Random();
-        int seed = gen.nextInt(omni.length);
-        
-        return Toolkit.getDefaultToolkit().getImage(
-                imageLoader.getClass().getResource(omni[seed]));
-    }
-    
-    /**
-     * Loads a random Cell Image chosen from the array of URI's.
-     * @return the image randomly selected
-     */
-    public static Image getSpace() {
-        Random gen = new Random();
-        int seed = gen.nextInt(cell.length);
-        
-        return Toolkit.getDefaultToolkit().getImage(
-                imageLoader.getClass().getResource(cell[seed]));
+                imageLoader.getClass().getResource(paths[seed]));
     }
 }

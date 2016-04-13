@@ -1,6 +1,5 @@
 package ca.bcit.comp2526.a3a.mazesolver;
 
-import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
 import java.util.Random;
@@ -125,10 +124,11 @@ public class Maze {
      * Generates a (terrible) random maze.
      */
     public void generateRandomMaze() {
-        final int probability = 45;
+        final int probability = 50;
+        final int hundred = 100;
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
-                if (random.nextInt(100) < probability) {
+                if (random.nextInt(hundred) < probability) {
                     mazeSections[i][j].setSolid(false);
                 } else {
                     mazeSections[i][j].setSolid(true);
@@ -179,7 +179,7 @@ public class Maze {
             for (int j = 0; j < columns; j++) {
                 if (!mazeSections[i][j].isSolid()) {
                     mazeSections[i][j].unvisit(); 
-                    mazeSections[i][j].setColour(Color.WHITE);
+                    mazeSections[i][j].setImage("path1.png");
                 }
             }
         }

@@ -1,6 +1,7 @@
 package ca.bcit.comp2526.a3a.mazesolver;
 
-import java.awt.Color;
+import sounds.SoundLoader;
+
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -26,7 +27,7 @@ import javax.swing.Timer;
 @SuppressWarnings("serial")
 public class GameFrame extends JFrame implements ActionListener {
 
-    public static final int DELAY = 1;
+    public static final int DELAY = 25;
 
     private final Maze maze;
     private final MazeSolver mazeSolver;
@@ -58,6 +59,7 @@ public class GameFrame extends JFrame implements ActionListener {
                 add(this.maze.getMazeSectionAt(i, j));
             }
         }
+        SoundLoader.bgm.play();
     }
 
     /**
@@ -169,7 +171,7 @@ public class GameFrame extends JFrame implements ActionListener {
                     if (solution < numberOfSolutions) {
                         ArrayList<MazeSection> aSolution = solutions.get(solution);
                         if (step < aSolution.size()) {
-                            aSolution.get(step++).setColour(Color.LIGHT_GRAY);
+                            aSolution.get(step++).setImage("path2.png");
                         } else {
                             maze.reset();
                             step = 0;
@@ -178,7 +180,7 @@ public class GameFrame extends JFrame implements ActionListener {
                     } else {
                         ArrayList<MazeSection> bestSolution = solutions.get(indexOfShortestSolution);
                         if (shortestSolutionStep < bestSolution.size()) {
-                            bestSolution.get(shortestSolutionStep++).setColour(Color.GRAY);
+                            bestSolution.get(shortestSolutionStep++).setImage("path3.png");
                         } else {
                             ((Timer) e.getSource()).stop();
                         }

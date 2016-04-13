@@ -1,8 +1,11 @@
 package ca.bcit.comp2526.a3a.mazesolver;
 
+import images.ImageLoader;
+
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -22,6 +25,7 @@ public class MazeSection extends JPanel {
     private boolean isSolid;
     private boolean visited;
     private Color color;
+    private Image image;
 
     /**
      * Constructor for objects of type MazeSection.
@@ -32,8 +36,9 @@ public class MazeSection extends JPanel {
      */
     public MazeSection(int row, int column, boolean isSolid) {
         location = new Point(column, row);
-        this.isSolid = isSolid;
+        setSolid(isSolid);
         color = Color.RED;
+        image = ImageLoader.getWall();
         setLayout(new GridLayout(1, 1));
         setBorder(BorderFactory.createLineBorder(Color.BLACK));
         addMouseListener(new MouseListener());
@@ -64,9 +69,12 @@ public class MazeSection extends JPanel {
         this.isSolid = isSolid;
         if (isSolid) {
             setColour(Color.RED);
+            image = ImageLoader.getWall();
         } else {
             setColour(Color.WHITE);
+            image = ImageLoader.getImage("path1.png");
         }
+        repaint();
     }
 
     /**
@@ -110,6 +118,16 @@ public class MazeSection extends JPanel {
     }
     
     /**
+     * Sets the image of this maze section.
+     * 
+     * @param string the URI of the image.
+     */
+    public void setImage(String string) {
+        image = ImageLoader.getImage(string);
+        repaint();
+    }
+    
+    /**
      * Draws the cell.
      * @param draw device context for the Panel to draw on
      */
@@ -117,16 +135,17 @@ public class MazeSection extends JPanel {
         super.paintComponent(draw);
         draw.setColor(color);
         draw.fillRect(0, 0, getWidth(), getHeight());
+        draw.drawImage(image, 0, 0, getWidth(), getHeight(), null);
+        
     }
     
     private class MouseListener extends MouseAdapter {
-        public void mouseClicked(MouseEvent e) {
+        public void mouseClicked(MouseEvent event) {
             if (isSolid) {
                 setSolid(false);
             } else {
                 setSolid(true);
             }
-            repaint();
         }
     }
 }
