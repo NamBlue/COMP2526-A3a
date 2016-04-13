@@ -26,7 +26,7 @@ import javax.swing.Timer;
 @SuppressWarnings("serial")
 public class GameFrame extends JFrame implements ActionListener {
 
-    public static final int DELAY = 25;
+    public static final int DELAY = 1;
 
     private final Maze maze;
     private final MazeSolver mazeSolver;

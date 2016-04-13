@@ -5,7 +5,7 @@ import java.util.ArrayList;
 /**
  * MazeSolver.
  *
- * @author BCIT
+ * @author BCIT, Jia Qi Lee
  * @version 2016
  */
 public class MazeSolver {
@@ -16,11 +16,11 @@ public class MazeSolver {
     /**
      * Constructor for objects of type MazeSolver.
      * 
-     * @param maze
-     * @param frame
+     * @param maze the Maze to solve
      */
     public MazeSolver(Maze maze) {
-        // TODO your code goes here
+        this.maze = maze;
+        mazeSolutions = new ArrayList<>();
     }
 
     /**
@@ -29,7 +29,7 @@ public class MazeSolver {
      * @return maze as a Maze
      */
     public Maze getMaze() {
-        // TODO your code goes here
+        return maze;
     }
 
     /**
@@ -39,49 +39,75 @@ public class MazeSolver {
      *            the maze to set
      */
     public void setMaze(Maze maze) {
-        // TODO your code goes here
+        this.maze = maze;
     }
 
     /**
      * Clears the list of solutions.
      */
     public void clear() {
-        // TODO your code goes here
+        mazeSolutions.clear();
     }
 
     /**
      * Solves the maze and returns a List of paths composed of MazeSections.
      * 
-     * @param solutions
-     *            as an int
-     * @return mazeSolutions as an ArrayList<ArrayList<MazeSection>>
+     * @return mazeSolutions as an ArrayList of ArrayList of type MazeSection
      * @throws MazeEntryPointException if the maze does not have an entry point at [0][1]
      */
     public ArrayList<ArrayList<MazeSection>> solveMaze() throws MazeEntryPointException {
-        // TODO your code goes here
+        clear();
+        maze.reset();
+        if (maze.getMazeSectionAt(0, 1).isSolid()) {
+            throw new MazeEntryPointException("No entry point at 0,1 - Unsolvable");
+        }
+        generatePaths(maze, 0, 1, new ArrayList<MazeSection>());
+        return mazeSolutions;
     }
 
     /**
      * Generates paths through the maze recursively and adds all solutions to
      * the collection of solutions.
      * 
-     * @param maze
-     * @param row
-     * @param column
-     * @param path
+     * @param maze the Maze to generate paths on
+     * @param row the row location
+     * @param column the column location
+     * @param path the path
      */
-    public void generatePaths(Maze maze, int row, int column, ArrayList<MazeSection> path) {
-        // TODO your code goes here
+    public void generatePaths(Maze maze, int row, int column, ArrayList<MazeSection> path) {      
+        if (row < 0 || column < 0 || row > maze.getRows() || column > maze.getColumns() 
+                || maze.getMazeSectionAt(row, column).isSolid() 
+                || maze.getMazeSectionAt(row, column).hasBeenVisited()) {
+            return;             
+        } else if (column == maze.getColumns() - 1) {
+            path.add(maze.getMazeSectionAt(row, column));
+            mazeSolutions.add(path);
+        } else {
+            maze.getMazeSectionAt(row, column).visit();
+            path.add(maze.getMazeSectionAt(row, column));
+            generatePaths(maze, row, column - 1, new ArrayList<MazeSection>(path));
+            generatePaths(maze, row, column + 1, new ArrayList<MazeSection>(path));
+            generatePaths(maze, row - 1, column, new ArrayList<MazeSection>(path));
+            generatePaths(maze, row + 1, column, new ArrayList<MazeSection>(path));           
+            maze.getMazeSectionAt(row, column).unvisit();
+        }
+        
     }
     
-    /**
+    /**`
      * Returns the index of the shortest path in the collection of paths, or
      * -1 if there is no shortest path, i.e., the maze has no solutions.
      * 
-     * @param paths
      * @return index as an int
      */
     public int findShortestPath() {
-        // TODO your code goes here
+        int shortest = mazeSolutions.get(0).size();
+        int index = 0;
+        for (int i = 0; i < mazeSolutions.size(); i++) {
+            if (mazeSolutions.get(i).size() < shortest) {
+                index = i;
+            }
+        }
+        return index;
     }
 }

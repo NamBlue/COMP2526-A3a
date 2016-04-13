@@ -9,29 +9,42 @@ import java.util.Scanner;
 /**
  * Maze.
  *
- * @author BCIT
+ * @author BCIT, Jia Qi Lee
  * @version 2016
  */
 public class Maze {
     private final MazeSection[][] mazeSections;
     private final Random random;
+    private final int rows;
+    private final int columns;
     private Scanner scan;
 
     /**
      * Constructor for objects of type Maze.
      * 
-     * @param rows
-     * @param columns
+     * @param rows the number of rows of this Maze
+     * @param columns the number of columns of this Maze
      */
     public Maze(int rows, int columns) {
-        // TODO your code goes here
+        if (rows <= 0 || columns <= 0) {
+            throw new IllegalArgumentException(
+                    "Parameters cannot be negative or zero");
+        }
+        this.rows = rows;
+        this.columns = columns;
+        random = new Random();
+        mazeSections = new MazeSection[rows][columns];
     }
 
     /**
      * Initializes a new empty maze.
      */
     public void init() {
-        // TODO your code goes here
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                mazeSections[i][j] = new MazeSection(i, j, true);
+            }
+        }
     }
 
     /**
@@ -39,7 +52,12 @@ public class Maze {
      * effectively wiping it clean.
      */
     public void clear() {
-        // TODO your code goes here
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                mazeSections[i][j].setSolid(false);
+                mazeSections[i][j].unvisit();
+            }
+        }
     }
 
     /**
@@ -48,8 +66,15 @@ public class Maze {
      * @param section
      *            a maze
      */
+    @SuppressWarnings("unused")
     private void makeSolid(MazeSection section) {
-        // TODO your code goes here
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                if (mazeSections[i][j] == section) {
+                    mazeSections[i][j].setSolid(true);
+                }
+            }
+        }
     }
 
     /**
@@ -58,40 +83,58 @@ public class Maze {
      * @param section
      *            a maze
      */
+    @SuppressWarnings("unused")
     private void makeNavigable(MazeSection section) {
-        // TODO your code goes here
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                if (mazeSections[i][j] == section) {
+                    mazeSections[i][j].setSolid(false);
+                }
+            }
+        }
     }
 
     /**
+     * Gets the number of rows.
      * @return the number of rows
      */
     public int getRows() {
-        // TODO your code goes here
+        return rows;
     }
 
     /**
+     * Gets the number of columns.
      * @return the number of columns
      */
     public int getColumns() {
-        // TODO your code goes here
+        return columns;
     }
 
     /**
      * Returns a reference to the MazeSection at the specified coordinates.
      * 
-     * @param row
-     * @param column
+     * @param row the row target MazeSection is at
+     * @param column the column target MazeSection is at
      * @return location in maze as a MazeSection
      */
     public MazeSection getMazeSectionAt(int row, int column) {
-        // TODO your code goes here
+        return mazeSections[row][column];
     }
 
     /**
      * Generates a (terrible) random maze.
      */
     public void generateRandomMaze() {
-        // TODO your code goes here
+        final int probability = 45;
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                if (random.nextInt(100) < probability) {
+                    mazeSections[i][j].setSolid(false);
+                } else {
+                    mazeSections[i][j].setSolid(true);
+                }
+            }
+        }
     }
 
     /**
@@ -106,7 +149,25 @@ public class Maze {
      *            that contains the maze
      */
     public void generateMazeFromFile(File file) throws IOException {
-        // TODO your code goes here
+        int row = 0;
+        int col = 0;
+        String buffer;
+        scan = new Scanner(file);
+        scan.useDelimiter("");
+        while (scan.hasNext()) {
+            buffer = scan.next();
+            System.out.print(buffer);
+            if (buffer.equals("*")) {
+                mazeSections[row][col].setSolid(true);
+                col++;
+            } else if (buffer.equals("\n")) {
+                col = 0;
+                row ++;
+            } else {
+                mazeSections[row][col].setSolid(false);
+                col++;
+            }
+        }        
     }
 
     /**
@@ -114,6 +175,13 @@ public class Maze {
      * and resetting their colour to white.
      */
     public void reset() {
-        // TODO your code goes here
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                if (!mazeSections[i][j].isSolid()) {
+                    mazeSections[i][j].unvisit(); 
+                    mazeSections[i][j].setColour(Color.WHITE);
+                }
+            }
+        }
     }
 }
