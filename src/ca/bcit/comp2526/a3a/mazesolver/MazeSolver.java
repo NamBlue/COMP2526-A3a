@@ -90,8 +90,7 @@ public class MazeSolver {
             generatePaths(maze, row - 1, column, new ArrayList<MazeSection>(path));
             generatePaths(maze, row + 1, column, new ArrayList<MazeSection>(path));           
             maze.getMazeSectionAt(row, column).unvisit();
-        }
-        
+        }        
     }
     
     /**`

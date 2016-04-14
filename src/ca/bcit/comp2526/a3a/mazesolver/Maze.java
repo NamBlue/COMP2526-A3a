@@ -2,6 +2,7 @@ package ca.bcit.comp2526.a3a.mazesolver;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -17,6 +18,7 @@ public class Maze {
     private final int rows;
     private final int columns;
     private Scanner scan;
+    private MazeSolver mazeSolver; //for generating random mazes
 
     /**
      * Constructor for objects of type Maze.
@@ -38,12 +40,14 @@ public class Maze {
     /**
      * Initializes a new empty maze.
      */
-    public void init() {
+    public void init(MazeSolver mazesolver) {
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
-                mazeSections[i][j] = new MazeSection(i, j, true);
+                mazeSections[i][j] = new MazeSection(i, j, false);
+                mazeSections[i][j].init();
             }
         }
+        mazeSolver = mazesolver;
     }
 
     /**
@@ -55,6 +59,28 @@ public class Maze {
             for (int j = 0; j < columns; j++) {
                 mazeSections[i][j].setSolid(false);
                 mazeSections[i][j].unvisit();
+            }
+        }
+    }
+    
+    /**
+     * Fills the maze with walls for random generation
+     */
+    public void genFill() {
+        for (int i = 0; i < columns; i++) {
+            for (int j = 0; j < rows && i % 2 == 0; j++) {
+                mazeSections[j][i].setSolid(true);
+            }
+        }
+    }
+    
+    /**
+     * Fills the maze with walls.
+     */
+    public void fill() {
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                mazeSections[i][j].setSolid(true);
             }
         }
     }
@@ -82,7 +108,6 @@ public class Maze {
      * @param section
      *            a maze
      */
-    @SuppressWarnings("unused")
     private void makeNavigable(MazeSection section) {
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
@@ -121,19 +146,38 @@ public class Maze {
     }
 
     /**
-     * Generates a (terrible) random maze.
+     * Generates a random maze.
      */
     public void generateRandomMaze() {
-        final int probability = 50;
-        final int hundred = 100;
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < columns; j++) {
-                if (random.nextInt(hundred) < probability) {
-                    mazeSections[i][j].setSolid(false);
-                } else {
-                    mazeSections[i][j].setSolid(true);
+        clear();
+        genFill();
+        //First create a map with a large amount of solutions
+        final int two = 2;
+        for (int i = 0; i < columns; i += two) {  
+            //number of openings for each column
+            int openings = random.nextInt(two) + 1;
+            for (int h = 0; h < openings; h++) {
+                int seed = random.nextInt(rows);
+                for (int j = 0; j < rows; j++) {
+                    if (j == seed) {
+                        mazeSections[j][i].setSolid(false);
+                    }
                 }
             }
+        }
+        //Create a list of solutions from that map
+        try {
+            ArrayList<ArrayList<MazeSection>> list = mazeSolver.solveMaze();
+            fill();
+            //Create the map based on the solutions
+            for (int i = 0; i < two; i++) {
+                int seed = random.nextInt(list.size());
+                for (int j = 0; j < list.get(seed).size(); j++) {
+                    makeNavigable(list.get(seed).get(j));
+                }
+            }
+        } catch (Exception e) {
+            
         }
     }
 
@@ -172,7 +216,7 @@ public class Maze {
 
     /**
      * Resets the maze by 'unvisiting' all visited maze sections
-     * and resetting their colour to white.
+     * and resetting the path color.
      */
     public void reset() {
         for (int i = 0; i < rows; i++) {

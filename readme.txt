@@ -2,6 +2,13 @@ COMP 2526 Assignment A3a - Solving Mazes with Recursion
 
 Simply run Maze.jar
 
+Shortcuts:
+
+	1 - Generates maze from file
+	2 - Generates a maze randomly
+	3 - Solves the maze
+	4 - Exits the program
+
 Generating the Maze
 
     The maze can be pre-generated from a text file. There are 25 lines, each containing 25 characters. Mazes

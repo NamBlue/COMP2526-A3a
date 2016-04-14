@@ -33,9 +33,9 @@ public final class Main {
         final Maze maze;
         final MazeSolver mazeSolver;
 
-        maze = new Maze(MAZE_DIMENSION, MAZE_DIMENSION);
-        maze.init();
+        maze = new Maze(MAZE_DIMENSION, MAZE_DIMENSION);       
         mazeSolver = new MazeSolver(maze);
+        maze.init(mazeSolver);
         frame = new GameFrame(maze, mazeSolver);
         position(frame);
         frame.init();

@@ -48,7 +48,7 @@ public class MazeSection extends JPanel {
      * Initializes this maze section.
      */
     public void init() {
-        isSolid = false;
+        setSolid(false);
     }
 
     /**

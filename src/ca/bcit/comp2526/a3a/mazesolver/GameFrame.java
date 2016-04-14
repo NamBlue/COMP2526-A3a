@@ -5,6 +5,8 @@ import sounds.SoundLoader;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -21,7 +23,7 @@ import javax.swing.Timer;
 /**
  * GameFrame.
  *
- * @author BCIT
+ * @author BCIT, Jia Qi Lee
  * @version 2016
  */
 @SuppressWarnings("serial")
@@ -34,16 +36,18 @@ public class GameFrame extends JFrame implements ActionListener {
     private JMenuBar menuBar;
     private JMenu fileMenu, mazeMenu;
     private JMenuItem menuItemOpenFile, menuItemGenerateRandom, menuItemSolveMaze;
+    private int choice; //Stores users choice for keyboard input
 
     /**
      * Constructor for objects of type GameFrame.
      * 
-     * @param maze
-     * @param mazeSolver
+     * @param maze the Maze for this GameFrame to display
+     * @param mazeSolver the MazeSolver for this GameFrame to use
      */
     public GameFrame(final Maze maze, final MazeSolver mazeSolver) {
         this.maze = maze;
         this.mazeSolver = mazeSolver;
+        addKeyListener(new KeyBoardInput());
     }
 
     /**
@@ -51,6 +55,7 @@ public class GameFrame extends JFrame implements ActionListener {
      * bar, constructs a new empty maze.
      */
     public void init() {
+        final int delay = 1000;
         setTitle("Assignment 3a");
         setJMenuBar(constructMenuBar());
         setLayout(new GridLayout(this.maze.getRows(), this.maze.getColumns()));
@@ -60,6 +65,14 @@ public class GameFrame extends JFrame implements ActionListener {
             }
         }
         SoundLoader.bgm.play();
+        //adder scheduled event to fix GameFrame components not displaying properly
+        new java.util.Timer().schedule( 
+                new java.util.TimerTask() {
+                    @Override
+                    public void run() {
+                        generateRandomMaze();
+                    }
+                }, delay);        
     }
 
     /**
@@ -71,16 +84,16 @@ public class GameFrame extends JFrame implements ActionListener {
         menuBar = new JMenuBar();
 
         fileMenu = new JMenu("File");
-        menuItemOpenFile = new JMenuItem("Open file...");
+        menuItemOpenFile = new JMenuItem("(1)Open file...");
         menuItemOpenFile.addActionListener(this);
         fileMenu.add(menuItemOpenFile);
-        menuItemGenerateRandom = new JMenuItem("Generate random maze");
+        menuItemGenerateRandom = new JMenuItem("(2)Generate random maze");
         menuItemGenerateRandom.addActionListener(this);
         fileMenu.add(menuItemGenerateRandom);
         menuBar.add(fileMenu);
 
         mazeMenu = new JMenu("Maze");
-        menuItemSolveMaze = new JMenuItem("Solve Maze");
+        menuItemSolveMaze = new JMenuItem("(3)Solve Maze");
         menuItemSolveMaze.addActionListener(this);
         mazeMenu.add(menuItemSolveMaze);
         menuBar.add(mazeMenu);
@@ -189,6 +202,65 @@ public class GameFrame extends JFrame implements ActionListener {
                 }
             });
             myTimer.start();
+        }
+    }
+    /**
+     * Invokes the appropriate method on the addressBook. When the user makes
+     * their selection the Keyboard listener stores the selection value in data
+     * member "choice" and then calls this method.
+     */
+    private void evaluateChoice() {
+        final int one = 1;
+        final int two = 2;
+        final int three = 3;
+        final int four = 4;
+
+        switch (choice) {
+          case one:
+              generateMazeFromFile();
+              break;
+          case two:
+              generateRandomMaze();
+              break;
+          case three:
+              generateMazeSolutions();
+              break;
+          case four:
+              System.exit(0);
+              break;
+          default:
+            // should not get here
+        }
+    }
+    
+    /**
+     * KeyBoardInput.
+     * A private (no one else needs access to this class) inner class (this
+     * class needs access to the GUI to handle user selections) that listens for
+     * keys pressed.
+     *
+     */
+    private class KeyBoardInput extends KeyAdapter {
+
+        /**
+         * Responds when a key is pressed on the keyboard.
+         * 
+         * @param event
+         *            KeyEvent - key pressed and other information
+         */
+        public void keyTyped(KeyEvent event) {
+            // set the "choice" data member of the outer class GUI
+            // to get the integer value, get the character value of the key
+            // pressed, make it a string and ask the Integer class to parse it
+            try {
+                choice = Integer.parseInt("" + event.getKeyChar());
+                // if it wasn't an integer key pressed then make an invalid
+                // choice
+            } catch (Exception except) {
+                choice = -1;// this will result in nothing happening
+            }
+            evaluateChoice(); // GUI method to call the addressBook to perform
+                              // task
         }
     }
 }
