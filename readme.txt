@@ -18,6 +18,8 @@ Generating the Maze
     You can modify or create a maze by simply clicking on the maze cells.
     
     There must be a open space at 0,1 of the maze.
+    
+    The maze can also be generated randomly using the same DFS algorithm.
 
 Solving the Maze
     
