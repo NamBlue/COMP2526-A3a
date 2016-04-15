@@ -33,3 +33,4 @@ Credits:
 Framework - BCIT
 Tiles - AngbandTk http://pousse.rapiere.free.fr/tome/index.htm
 Music - Dungeon & Dragons - Chronicles of Mystara, Capcom
+Delayed Method call code snippet - tangens from Stack Overflow
