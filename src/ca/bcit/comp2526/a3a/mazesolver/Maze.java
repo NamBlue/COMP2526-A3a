@@ -91,7 +91,6 @@ public class Maze {
      * @param section
      *            a maze
      */
-    @SuppressWarnings("unused")
     private void makeSolid(MazeSection section) {
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
@@ -153,6 +152,7 @@ public class Maze {
         genFill();
         //First create a map with a large amount of solutions
         final int two = 2;
+        final int four = 4;
         for (int i = 0; i < columns; i += two) {  
             //number of openings for each column
             int openings = random.nextInt(two) + 1;
@@ -170,10 +170,14 @@ public class Maze {
             ArrayList<ArrayList<MazeSection>> list = mazeSolver.solveMaze();
             fill();
             //Create the map based on the solutions
-            for (int i = 0; i < two; i++) {
+            for (int i = 0; i < four; i++) {
                 int seed = random.nextInt(list.size());
                 for (int j = 0; j < list.get(seed).size(); j++) {
-                    makeNavigable(list.get(seed).get(j));
+                    if (random.nextInt(two) < 1 && j == list.get(seed).size() - 1) {
+                        makeSolid(list.get(seed).get(j));                       
+                    } else {
+                        makeNavigable(list.get(seed).get(j));
+                    }
                 }
             }
         } catch (Exception e) {
